@@ -3,119 +3,45 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>离线互动课件示例</title>
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <title>第九章 静电场及其应用</title>
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
-  <body>
-    <main class="deck" aria-label="互动课件">
-      <header class="topbar">
-        <div class="course-mark">HTML 互动课件</div>
-        <div class="progress-shell" aria-hidden="true">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="page-count" aria-live="polite">
-          <span id="currentPage">1</span>/<span id="totalPages">3</span>
-        </div>
+  <body class="home-page">
+    <main class="course-home">
+      <header class="home-heading">
+        <p class="eyebrow">高中物理互动课件</p>
+        <h1>第九章 静电场及其应用</h1>
+        <p class="lead">选择课程进入课件</p>
       </header>
 
-      <section class="slides" id="slides">
-        <article class="slide active" data-slide-title="导入" aria-hidden="false">
-          <div class="slide-layout title-layout">
-            <div class="title-copy">
-              <p class="eyebrow reveal">数学可视化课堂</p>
-              <h1 class="reveal">从图形变化理解函数关系</h1>
-              <p class="lead reveal">
-                通过可视化、逐步提问和 GeoGebra 动态演示，让学生把“变化”看见。
-              </p>
-            </div>
-            <div class="goal-panel reveal">
-              <h2>本节目标</h2>
-              <ul>
-                <li>识别变量变化中的稳定关系</li>
-                <li>用图像解释参数对函数的影响</li>
-                <li>借助 GeoGebra 验证猜想</li>
-              </ul>
-            </div>
-            <button class="prompt-card reveal" type="button" data-flip-card>
-              <span>导入问题</span>
-              <strong>当一个点沿直线移动时，另一个量会怎样同步变化？</strong>
-            </button>
-          </div>
-        </article>
+      <nav class="lesson-list" aria-label="课程列表">
+        <a class="lesson-link" href="9.2/">
+          <span class="lesson-number">9.2</span>
+          <span class="lesson-copy">
+            <strong>库仑定律</strong>
+            <small>电荷间的相互作用力</small>
+          </span>
+          <span class="lesson-arrow" aria-hidden="true">&#8594;</span>
+        </a>
 
-        <article class="slide" data-slide-title="概念" aria-hidden="true">
-          <div class="slide-layout concept-layout">
-            <div class="section-heading">
-              <p class="eyebrow reveal">核心概念</p>
-              <h1 class="reveal">把“动”拆成可观察的三件事</h1>
-            </div>
+        <a class="lesson-link" href="9.3.1/">
+          <span class="lesson-number">9.3</span>
+          <span class="lesson-copy">
+            <strong>电场 电场强度（第1课时）</strong>
+            <small>认识电场与电场强度</small>
+          </span>
+          <span class="lesson-arrow" aria-hidden="true">&#8594;</span>
+        </a>
 
-            <div class="concept-grid">
-              <button class="concept-card reveal" type="button" data-highlight>
-                <span class="number">01</span>
-                <h2>谁在变</h2>
-                <p>明确自变量和因变量，先找运动中的输入和输出。</p>
-              </button>
-              <button class="concept-card reveal" type="button" data-highlight>
-                <span class="number">02</span>
-                <h2>怎样变</h2>
-                <p>观察快慢、方向和范围，判断变化是否均匀。</p>
-              </button>
-              <button class="concept-card reveal" type="button" data-highlight>
-                <span class="number">03</span>
-                <h2>为何这样变</h2>
-                <p>把图形关系转成表达式，再回到图像验证。</p>
-              </button>
-            </div>
-
-            <div class="quiz reveal" data-quiz>
-              <div>
-                <h2>课堂小测</h2>
-                <p>拖动参数后，图像整体上移。最可能变化的是哪一项？</p>
-              </div>
-              <div class="quiz-actions">
-                <button type="button" data-answer="false">自变量系数</button>
-                <button type="button" data-answer="true">常数项</button>
-                <button type="button" data-answer="false">定义域</button>
-              </div>
-              <p class="quiz-feedback" aria-live="polite"></p>
-            </div>
-          </div>
-        </article>
-
-        <article class="slide" data-slide-title="GeoGebra" aria-hidden="true">
-          <div class="slide-layout geogebra-layout">
-            <div class="section-heading">
-              <p class="eyebrow reveal">动态验证</p>
-              <h1 class="reveal">用 GeoGebra 观察参数变化</h1>
-              <p class="lead reveal">
-                把你的 .ggb 文件放到 assets/demo.ggb，即可在这一页离线演示。
-              </p>
-            </div>
-
-            <div class="ggb-stage">
-              <div id="ggb-element" class="ggb-element" role="application" aria-label="GeoGebra applet"></div>
-              <div class="ggb-fallback" id="ggbFallback" hidden>
-                <h2>GeoGebra 暂未加载</h2>
-                <p id="ggbFallbackText">
-                  请使用本地服务器打开课件，并确认 GeoGebra 离线包和 assets/demo.ggb 已存在。
-                </p>
-              </div>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <nav class="controls" aria-label="课件控制">
-        <button class="icon-button" id="prevBtn" type="button" aria-label="上一步" title="上一步">
-          <span aria-hidden="true">&#8593;</span>
-        </button>
-        <button class="icon-button" id="nextBtn" type="button" aria-label="下一步" title="下一步">
-          <span aria-hidden="true">&#8595;</span>
-        </button>
+        <a class="lesson-link" href="9.3.2/">
+          <span class="lesson-number">9.3</span>
+          <span class="lesson-copy">
+            <strong>电场 电场强度（第2课时）</strong>
+            <small>点电荷的电场与电场叠加</small>
+          </span>
+          <span class="lesson-arrow" aria-hidden="true">&#8594;</span>
+        </a>
       </nav>
     </main>
-
-    <script src="script.js?v=9"></script>
   </body>
 </html>

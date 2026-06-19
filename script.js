@@ -6,6 +6,9 @@ const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const ggbFallback = document.getElementById("ggbFallback");
 const ggbFallbackText = document.getElementById("ggbFallbackText");
+const assetBase = document.body.dataset.assetBase || "";
+const ggbFile = document.body.dataset.ggbFile || "assets/demo.ggb";
+const progressStorageKey = `lesson-progress:${window.location.pathname}`;
 
 let activeIndex = 0;
 let geogebraStarted = false;
@@ -17,6 +20,48 @@ totalPages.textContent = String(slides.length);
 
 function activeSlide() {
   return slides[activeIndex];
+}
+
+function saveProgress() {
+  try {
+    window.sessionStorage.setItem(
+      progressStorageKey,
+      JSON.stringify({
+        activeIndex,
+        visibleCount: activeSlide().querySelectorAll(".reveal.visible").length,
+      }),
+    );
+  } catch (error) {
+    // The lesson still works when browser storage is unavailable.
+  }
+}
+
+function restoreProgress() {
+  try {
+    const savedProgress = JSON.parse(window.sessionStorage.getItem(progressStorageKey));
+
+    if (!savedProgress || !Number.isInteger(savedProgress.activeIndex)) {
+      return false;
+    }
+
+    activeIndex = Math.min(Math.max(savedProgress.activeIndex, 0), slides.length - 1);
+    slides.forEach((slide, index) => {
+      const isActive = index === activeIndex;
+      slide.classList.toggle("active", isActive);
+      slide.setAttribute("aria-hidden", String(!isActive));
+      resetSlideAnimation(slide);
+    });
+
+    const revealItems = Array.from(activeSlide().querySelectorAll(".reveal"));
+    const visibleCount = Math.min(
+      Math.max(Number(savedProgress.visibleCount) || 0, 0),
+      revealItems.length,
+    );
+    revealItems.slice(0, visibleCount).forEach((item) => item.classList.add("visible"));
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 function showFallback(message) {
@@ -72,6 +117,7 @@ function updateControls() {
   const hasNextStep = !!activeSlide().querySelector(".reveal:not(.visible)");
   prevBtn.disabled = activeIndex === 0 && !hasPreviousStep;
   nextBtn.disabled = activeIndex === slides.length - 1 && !hasNextStep;
+  saveProgress();
 }
 
 function goToSlide(index, options = {}) {
@@ -124,10 +170,10 @@ function setupQuiz() {
 
         if (button.dataset.answer === "true") {
           button.classList.add("correct");
-          feedback.textContent = "正确。整体上移通常对应常数项增加。";
+          feedback.textContent = quiz.dataset.correctFeedback || "回答正确。";
         } else {
           button.classList.add("wrong");
-          feedback.textContent = "再想想：哪些变化不会改变图像的形状和方向，只改变高度？";
+          feedback.textContent = quiz.dataset.wrongFeedback || "再想一想，结合本页规律重新判断。";
         }
       });
     });
@@ -162,11 +208,13 @@ function injectGeogebra() {
   const stage = document.querySelector(".ggb-stage");
   const stageWidth = Math.max(320, Math.floor(stage.getBoundingClientRect().width));
   const stageHeight = Math.max(180, Math.floor(stage.getBoundingClientRect().height));
+  const ggbUrl = new URL(`${assetBase}${ggbFile}`, window.location.href);
+  ggbUrl.searchParams.set("v", String(Date.now()));
   const params = {
     appName: "classic",
     width: stageWidth,
     height: stageHeight,
-    filename: "assets/demo.ggb",
+    filename: ggbUrl.href,
     perspective: "GT",
     showToolBar: true,
     showAlgebraInput: false,
@@ -193,7 +241,7 @@ function injectGeogebra() {
       macro: false,
     };
     ggbApplet = new GGBApplet(params, views, true);
-    ggbApplet.setHTML5Codebase("GeoGebra/HTML5/5.0/web3d/");
+    ggbApplet.setHTML5Codebase(`${assetBase}GeoGebra/HTML5/5.0/web3d/`);
     ggbApplet.inject("ggb-element");
 
     window.setTimeout(() => {
@@ -228,7 +276,7 @@ function loadGeogebra() {
 
   geogebraScriptLoading = true;
   const script = document.createElement("script");
-  script.src = "GeoGebra/deployggb.js";
+  script.src = `${assetBase}GeoGebra/deployggb.js`;
   script.onload = () => {
     geogebraScriptReady = true;
     geogebraScriptLoading = false;
@@ -269,6 +317,8 @@ window.addEventListener("keydown", (event) => {
 
 setupQuiz();
 setupCards();
-playInitialAnimation(activeSlide());
+if (!restoreProgress()) {
+  playInitialAnimation(activeSlide());
+}
 updateControls();
 window.addEventListener("load", preloadGeogebraScript);
